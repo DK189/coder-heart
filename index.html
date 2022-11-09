@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Coder Heart - Trái tim coder">
+    <meta name="keywords" content="Coder Heart, DK189, JavaScript">
+    <meta name="author" content="DK189">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="play.css">
+
+    <title>Coder Heart - DK189.app</title>
+</head>
+
+<body>
+    <script src="play.js" type="application/javascript"></script>
+    <script>
+        "use strict";
+        (async function main(css) {
+            console.log("%cHê sờ lô, %s", css, "hơ sờ ly ly!");
+        })((document.currentScript.remove(), `text-shadow:2px 2px 3px #F9F3FF,0 0 6px #CC8AFF,0 0 12px #C57CFF,0 0 22px #C57CFF;font-size:40px;`));
+    </script>
+
+    <script>
+        ((w,s)=>(s.src="https://www.youtube.com/iframe_api",w.appendChild(s)))(document.head,document.createElement('script'));
+        function onYouTubeIframeAPIReady() {
+            var yt = document.createElement("div");
+            document.body.appendChild(yt);
+            new YT.Player(yt, {
+                height: '0',
+                width: '0',
+                videoId: '6W9SWWRG35I',
+                playerVars: {
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': e=>(setInterval(()=>e.target.playVideo(), 100),window.dispatchEvent(new TouchEvent("touchend")))
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
