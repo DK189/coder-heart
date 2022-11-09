@@ -259,11 +259,11 @@ function onYouTubeIframeAPIReady() {
         const percent = (ytplayer.getCurrentTime() / ytplayer.getDuration()) * 100;
         progressBar.style.flexBasis = `${percent}%`;
     
-        // Skip to next track if at the end of the song.
-        if (percent === 100) {
-            trackSwitch = true;
-            handleForwardButton();
-        }
+        // // Skip to next track if at the end of the song.
+        // if (percent === 100) {
+        //     trackSwitch = true;
+        //     handleForwardButton();
+        // }
     };
     
     const handleBackButton = () => {
@@ -287,10 +287,12 @@ function onYouTubeIframeAPIReady() {
         width: 250,
         videoId: '6W9SWWRG35I',
         playerVars: {
-            'playsinline': 1
+            'playsinline': 1,
+            'autoplay': 1,
+            'loop': 1,
         },
         events: {
-            // 'onReady': e=>(e.target.playVideo(),window.dispatchEvent(new TouchEvent("touchend"))),
+            'onReady': e=>(e.target.setLoop(true),e.target.playVideo(),window.dispatchEvent(new TouchEvent("touchend"))),
             // 'onStateChange': e=>(e.data===1&&(e.target.getIframe().style.display = "block")),
             // 'onStateChange': e=>(console.log("onStateChange", e)),
         }
@@ -301,9 +303,9 @@ function onYouTubeIframeAPIReady() {
     const togglePlay = () => {
         if(ytplayer) {
             if (ytplayer.getPlayerState() === YT.PlayerState.PLAYING) {
-                ytplayer.pauseVideo()
+                ytplayer.pauseVideo();
             } else {
-                ytplayer.playVideo()
+                ytplayer.playVideo();
             }
         }
     };
@@ -337,6 +339,17 @@ function onYouTubeIframeAPIReady() {
         if (e.code === "Space") {
             togglePlay();
         }
+    });
+    window.addEventListener("click", e => {
+        togglePlay();
+    });
+
+    var inited = false;
+    window.addEventListener("mousemove", ()=>{
+        !inited && ytplayer && ytplayer.playVideo && ytplayer.getDuration && ytplayer.getDuration() && (inited = true) && ytplayer.playVideo() && (console.log("inited", ytplayer.getDuration()), !0);
+    });
+    window.addEventListener("touchstart", ()=>{
+        !inited && ytplayer && ytplayer.playVideo && ytplayer.getDuration && ytplayer.getDuration() && (inited = true) && ytplayer.playVideo() && (console.log("inited", ytplayer.getDuration()), !0);
     });
     
     let mousedown = false;

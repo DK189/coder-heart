@@ -140,7 +140,7 @@ button.playing {
 
 button:disabled {
     background-color: transparent;
-    color: rgb(220, 220, 220);
+    color: rgb(245, 245, 245);
 }
 
 button.play span.pause {
