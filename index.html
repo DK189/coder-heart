@@ -11,12 +11,12 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="play.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 
     <title>Coder Heart - DK189.app</title>
 </head>
 
 <body>
-    <script src="play.js" type="application/javascript"></script>
     <script>
         "use strict";
         (async function main(css) {
@@ -24,24 +24,39 @@
         })((document.currentScript.remove(), `text-shadow:2px 2px 3px #F9F3FF,0 0 6px #CC8AFF,0 0 12px #C57CFF,0 0 22px #C57CFF;font-size:40px;`));
     </script>
 
-    <script>
-        ((w,s)=>(s.src="https://www.youtube.com/iframe_api",w.appendChild(s)))(document.head,document.createElement('script'));
-        function onYouTubeIframeAPIReady() {
-            var yt = document.createElement("div");
-            document.body.appendChild(yt);
-            new YT.Player(yt, {
-                height: '0',
-                width: '0',
-                videoId: '6W9SWWRG35I',
-                playerVars: {
-                    'playsinline': 1
-                },
-                events: {
-                    'onReady': e=>(setInterval(()=>e.target.playVideo(), 100),window.dispatchEvent(new TouchEvent("touchend")))
-                }
-            });
-        }
-    </script>
+    <div class="player-wrapper">
+        <div class="player">
+            <audio class="player__audio viewer">
+            <source src="https://www.bensound.com/bensound-music/bensound-ukulele.mp3" type="audio/mpeg" data-trackid="1">
+            Your browser does not support the audio element.
+            </audio>
+            <div class="song-panel">
+                <div class="song-info">
+                    <div class="song-info__title">Hê sờ lô hơ sờ ly ly</div>
+                    <div class="song-info__artist">...</div>
+                    <div class="progress">
+                    <div class="progress__filled"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="player-controls">
+                <div class="spinner">
+                    <div class="spinner__disc" style="background-image: url(https://www.bensound.com/bensound-img/summer.jpg)">
+                    <div class="center__disc"></div>
+                    </div>
+                </div>
+                <button class="backward" disabled><i class="fas fa-backward fa-2x"></i></button>
+                <button class="play">
+                    <i class="fas fa-play fa-3x"></i>
+                    <span class="pause left"></span>
+                    <span class="pause right"></span>
+                </button>
+                <button class="forward" disabled><i class="fas fa-forward fa-2x"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="play.js" type="application/javascript"></script>
 </body>
 
 </html>

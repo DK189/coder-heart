@@ -47,19 +47,21 @@
         // context.fillStyle = "#772222";
         // context.fillText("💗♡🤍♥︎❤︎💓", 100, 100);
 
-        // bubleHeart && bubleHeart(canvas, context);
+        bubleHeart && bubleHeart(canvas, context);
         window.neonHeart && window.neonHeart(canvas, context);
-
-        // console.log(window.bubleHeart);
     });
 
     var bubleHeart = (bubleHearts => {
+        const player = document.querySelector('.player');
+        const songPanel = player.querySelector('.song-panel');
+
         return function (canvas, context) {
+            let rect = songPanel.getClientRects()[0];
             const maxHeart = canvas.width; //Math.floor(canvas.width / 10);
-            if (bubleHearts.length < maxHeart && Math.random() > 0.93) {
+            if (bubleHearts.length < maxHeart && songPanel.classList.contains("playing") && Math.random() > 0.93) {
                 bubleHearts.push({
-                    y: canvas.height,
-                    x: Math.floor(Math.random() * canvas.width * 3 % canvas.width)
+                    y: rect.y + rect.height-(isMobile?50:0),
+                    x: rect.x + Math.floor(Math.random() * rect.width * 3 % rect.width)
                 });
             }
         
@@ -69,11 +71,10 @@
         
                 context.textAlign = "center";
                 context.font = "23px arial"
-                // context.fillStyle = "#77222299";
-                context.fillText("💗", x, heart.y);
+                context.fillText("💗", x * koef, heart.y * koef);
             }
         
-            bubleHearts = bubleHearts.filter(({y})=>y>=0);
+            bubleHearts = bubleHearts.filter(({y})=>y>=rect.y-(isMobile?70:50));
         }
     })([]);
 
@@ -102,14 +103,14 @@
             for (i = 0; i < pointsOrigin.length; i++) {
                 targetPoints[i] = [];
                 targetPoints[i][0] = kx * pointsOrigin[i][0] + width / 2;
-                targetPoints[i][1] = ky * pointsOrigin[i][1] + height / 2;
+                targetPoints[i][1] = ky * pointsOrigin[i][1] + height / 2 + (isMobile ? -100 : 0);
             }
         };
         
         var e = [];
         for (i = 0; i < heartPointsCount; i++) {
             var x = Math.floor(canvas.width/2);
-            var y = Math.floor(canvas.height/2);
+            var y = Math.floor(canvas.height/2 + (isMobile ? -100 : 0));
             e[i] = {
                 vx: 0,
                 vy: 0,
@@ -189,3 +190,158 @@
     }
 
 })(document.currentScript.remove());
+
+
+
+((w,s)=>(s.src="https://www.youtube.com/iframe_api",w.appendChild(s)))(document.head,document.createElement('script'));
+function onYouTubeIframeAPIReady() {
+    const player = document.querySelector('.player');
+    const songPanel = player.querySelector('.song-panel');
+    const songTitle = player.querySelector('.song-info__title');
+    const songArtist = player.querySelector('.song-info__artist');
+    const backButton = player.querySelector('.backward');
+    const playButton = player.querySelector('.play');
+    const forwardButton = player.querySelector('.forward');
+    const spinner = player.querySelector('.spinner');
+    const spinnerDisc = player.querySelector('.spinner__disc');
+    const progress = player.querySelector('.progress');
+    const progressBar = player.querySelector('.progress__filled');
+    
+    let playing = false;
+    let trackSwitch = false;
+    
+    const toggleSongPanel = () => {
+    
+        if (!trackSwitch) {
+            // Scale the disc
+            spinnerDisc.classList.toggle('scale');
+    
+            // Show / hide song panel
+            songPanel.classList.toggle('playing');
+    
+            // Change button icon
+            playButton.classList.toggle('playing');
+        }
+    };
+
+    const openSongPanel = () => {
+        spinnerDisc.classList.add('scale');
+        songPanel.classList.add('playing');
+        playButton.classList.add('playing');
+    };
+    const closeSongPanel = () => {
+        spinnerDisc.classList.remove('scale');
+        songPanel.classList.remove('playing');
+        playButton.classList.remove('playing');
+    };
+    
+    const startSpin = () => {
+        // Start spinning the disc
+        spinner.classList.add('spin');
+    };
+    
+    const stopSpin = () => {
+        // Stop spinning the disc
+        const spin = document.querySelector('.spin');
+        spin && spin.addEventListener("animationiteration", () => {
+            if (!playing) {
+            spin.style.animation = 'none';
+            spinner.classList.remove('spin');
+            spin.style.animation = '';
+            }
+        }, {
+            once: true
+        });
+    };
+    
+    const handleProgress = () => {
+        // Update the progress bar.
+        const percent = (ytplayer.getCurrentTime() / ytplayer.getDuration()) * 100;
+        progressBar.style.flexBasis = `${percent}%`;
+    
+        // Skip to next track if at the end of the song.
+        if (percent === 100) {
+            trackSwitch = true;
+            handleForwardButton();
+        }
+    };
+    
+    const handleBackButton = () => {
+        ytplayer && ytplayer.previousVideo();
+    };
+    
+    const handleForwardButton = () => {
+        ytplayer && ytplayer.nextVideo();
+    };
+    
+    function scrub(e) {
+        const scrubTime = (e.offsetX / progress.offsetWidth) * ytplayer.getDuration();
+        ytplayer.seekTo(scrubTime);
+    }
+
+    
+    var yt = document.createElement("div");
+    document.body.appendChild(yt);
+    var ytplayer = new YT.Player(yt, {
+        height: 63,
+        width: 250,
+        videoId: '6W9SWWRG35I',
+        playerVars: {
+            'playsinline': 1
+        },
+        events: {
+            // 'onReady': e=>(e.target.playVideo(),window.dispatchEvent(new TouchEvent("touchend"))),
+            // 'onStateChange': e=>(e.data===1&&(e.target.getIframe().style.display = "block")),
+            // 'onStateChange': e=>(console.log("onStateChange", e)),
+        }
+    });
+
+    window.ytplayer = ytplayer;
+    
+    const togglePlay = () => {
+        if(ytplayer) {
+            if (ytplayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                ytplayer.pauseVideo()
+            } else {
+                ytplayer.playVideo()
+            }
+        }
+    };
+
+    ytplayer.addEventListener("onStateChange", e=>{
+        if(ytplayer) {
+            let vidDat = ytplayer.getVideoData();
+            if (vidDat) {
+                songTitle.innerHTML = vidDat.title;
+                songArtist.innerHTML = vidDat.author;
+            }
+
+            if (ytplayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                startSpin();
+                openSongPanel();
+            } else {
+                stopSpin();
+                closeSongPanel();
+            }
+        }
+    });
+
+    setInterval(()=>{
+        ytplayer && ytplayer.getCurrentTime && ytplayer.getDuration && handleProgress();
+    }, 100);
+    
+    backButton.addEventListener('click', handleBackButton);
+    forwardButton.addEventListener('click', handleForwardButton);
+    playButton.addEventListener('click', togglePlay);
+    window.addEventListener("keypress", e => {
+        if (e.code === "Space") {
+            togglePlay();
+        }
+    });
+    
+    let mousedown = false;
+    progress.addEventListener('click', scrub);
+    progress.addEventListener('mousemove', (e) => mousedown && scrub(e));
+    progress.addEventListener('mousedown', () => mousedown = true);
+    progress.addEventListener('mouseup', () => mousedown = false);
+}
