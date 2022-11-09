@@ -48,10 +48,10 @@
         // context.fillText("💗♡🤍♥︎❤︎💓", 100, 100);
 
         bubleHeart && bubleHeart(canvas, context);
-        window.neonHeart && window.neonHeart(canvas, context);
+        neonHeart && neonHeart(canvas, context);
     });
 
-    var bubleHeart = (bubleHearts => {
+    const bubleHeart = (bubleHearts => {
         const player = document.querySelector('.player');
         const songPanel = player.querySelector('.song-panel');
 
@@ -78,7 +78,7 @@
         }
     })([]);
 
-    window.neonHeart = (()=>{
+    const neonHeart = (()=>{
         var rand = Math.random;
         
         var heartPosition = function (rad) {
@@ -89,7 +89,7 @@
             return [dx + pos[0] * sx, dy + pos[1] * sy];
         };
         
-        var traceCount = isMobile ? 37 : 50;
+        var traceCount = isMobile ? 35 : 50;
         var pointsOrigin = [];
         var i;
         var dr = isMobile ? 0.1 : 0.05;
@@ -109,8 +109,8 @@
         
         var e = [];
         for (i = 0; i < heartPointsCount; i++) {
-            var x = Math.floor(canvas.width/2);
-            var y = Math.floor(canvas.height/2 + (isMobile ? -100 : 0));
+            var x = rand() < .5 ? 0: width;
+            var y = rand() < .5 ? 0: height;
             e[i] = {
                 vx: 0,
                 vy: 0,
@@ -127,8 +127,8 @@
         }
         
         var config = {
-            traceK: 0.4,
-            timeDelta: 0.05
+            traceK: 0.35,
+            timeDelta: 0.15
         };
         
         var time = 0;
@@ -172,13 +172,10 @@
                     N.y -= config.traceK * (N.y - T.y);
                 }
                 ctx.fillStyle = u.f;
-                // context.fillStyle = "#772222ff";
                 for (k = 0; k < u.trace.length; k++) {
                     ctx.fillRect(u.trace[k].x, u.trace[k].y, 1, 1);
                 }
             }
-            //ctx.fillStyle = "rgba(255,255,255,1)";
-            //for (i = u.trace.length; i--;) ctx.fillRect(targetPoints[i][0], targetPoints[i][1], 2, 2);
         }
     })();
 
@@ -342,6 +339,13 @@ function onYouTubeIframeAPIReady() {
     });
     window.addEventListener("click", e => {
         togglePlay();
+    });
+    window.addEventListener("touchstart", function() {
+        const touchHndl = function() {
+            togglePlay();
+            this.removeEventListener("touchend",touchHndl)
+        }
+        this.addEventListener("touchend",touchHndl);
     });
 
     var inited = false;
